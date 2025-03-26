@@ -11,7 +11,7 @@ if archivo is not None:
     df = pd.read_csv(archivo)
 
     # Ingresar palabras clave
-    palabras_input = st.text_area("Escribe las palabras clave separadas por coma", "sitio prioritario, zona protegida")
+    palabras_input = st.text_area("Escribe las palabras o frases clave separadas por coma", "sitio prioritario, zona protegida")
     palabras_clave = [p.strip().lower() for p in palabras_input.split(",") if p.strip()]
 
     # Botón de búsqueda
@@ -28,8 +28,23 @@ if archivo is not None:
                     })
                     break  # Solo muestra una coincidencia por fila
 
+        # if resultados:
+        #     st.success(f"Se encontraron coincidencias en {len(resultados)} archivos.")
+        #     st.dataframe(pd.DataFrame(resultados))
+        # else:
+        #     st.warning("No se encontraron coincidencias.")
         if resultados:
             st.success(f"Se encontraron coincidencias en {len(resultados)} archivos.")
-            st.dataframe(pd.DataFrame(resultados))
+    
+            resultados_df = pd.DataFrame(resultados)
+
+    # Convertir la columna URL a un enlace HTML clickeable
+            resultados_df["URL"] = resultados_df["URL"].apply(
+            lambda x: f'<a href="{x}" target="_blank">{x}</a>'
+        )
+
+    # Mostrar la tabla con HTML habilitado
+            st.write(resultados_df.to_html(escape=False, index=False), unsafe_allow_html=True)
+
         else:
             st.warning("No se encontraron coincidencias.")
