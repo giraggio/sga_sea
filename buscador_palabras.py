@@ -25,7 +25,6 @@ if archivo is not None:
                     resultados.append({
                         "Palabra Clave": palabra,
                         "URL": row["url"],
-                        "Fragmento": texto[:200] + "..."
                     })
                     break  # Solo muestra una coincidencia por fila
 
