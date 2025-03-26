@@ -5,7 +5,7 @@ from io import StringIO
 st.title("🔍 Buscador de Palabras Clave en CAV")
 
 # Subir archivo CSV
-archivo = r'C:\Users\GabrielRaggio\OneDrive - SGA SPA\Documentos\Scraping\Palabras Clave\cavs_texto.csv'
+archivo = 'https://raw.githubusercontent.com/giraggio/sga_sea/refs/heads/main/cavs_texto.csv'
 
 if archivo is not None:
     df = pd.read_csv(archivo)
