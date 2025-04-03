@@ -1,58 +1,46 @@
 import streamlit as st
 import pandas as pd
-from io import StringIO
 
-st.title("🔍 Buscador de Palabras Clave en CAV")
+st.title("🔍 Buscador de Palabras Clave")
 
-# Subir archivo CSV
-archivo = 'https://raw.githubusercontent.com/giraggio/sga_sea/refs/heads/main/cavs_texto.csv'
+# 🔽 Elegir base de datos
+opcion = st.selectbox("Selecciona la base de datos que quieres consultar:", ["CAV", "ICC"])
 
-if archivo is not None:
-    df = pd.read_csv(archivo)
+# 📂 URLs de los archivos
+archivos = {
+    "CAV": "https://raw.githubusercontent.com/giraggio/sga_sea/refs/heads/main/cavs_texto.csv",
+    "ICC": "https://raw.githubusercontent.com/giraggio/sga_sea/refs/heads/main/pacs_texto.csv"
+}
 
-    # Ingresar palabras clave
-    palabras_input = st.text_area("Escribe las palabras o frases clave separadas por coma", "sitio prioritario, zona protegida")
-    palabras_clave = [p.strip().lower() for p in palabras_input.split(",") if p.strip()]
+# 📝 Ingreso de palabras clave
+palabras_input = st.text_area(f"Escribe las palabras o frases clave separadas por coma", "sitio prioritario, zona protegida")
+palabras_clave = [p.strip().lower() for p in palabras_input.split(",") if p.strip()]
 
-    # Botón de búsqueda
-    if st.button("Buscar"):
-        resultados = []
+# 🔍 Botón de búsqueda
+if st.button("Buscar"):
+    # Cargar CSV según la opción seleccionada
+    df = pd.read_csv(archivos[opcion])
 
-        for i, row in df.iterrows():
-            texto = str(row["texto"]).lower()
-            for palabra in palabras_clave:
-                if palabra in texto:
-                    resultados.append({
-                        "Palabra Clave": palabra,
-                        "URL": row["url"]
-                    })
-                    break  # Solo muestra una coincidencia por fila
+    # Combinar palabras clave en una expresión regular
+    palabras_regex = "|".join([f"\\b{p}\\b" for p in palabras_clave])
 
-        # if resultados:
-        #     st.success(f"Se encontraron coincidencias en {len(resultados)} archivos.")
-        #     st.dataframe(pd.DataFrame(resultados))
-        # else:
-        #     st.warning("No se encontraron coincidencias.")
-        if resultados:
-            st.success(f"Se encontraron coincidencias en {len(resultados)} archivos.")
-    
-            resultados_df = pd.DataFrame(resultados)
+    # Filtrar filas que contienen alguna palabra clave
+    df["texto"] = df["texto"].astype(str).str.lower()
+    coincidencias = df[df["texto"].str.contains(palabras_regex, na=False, regex=True)]
 
-    # Convertir la columna URL a un enlace HTML clickeable
-            resultados_df["URL"] = resultados_df["URL"].apply(
+    if not coincidencias.empty:
+        st.success(f"Se encontraron coincidencias en {len(coincidencias)} archivos.")
+        resultados_df = coincidencias[["texto", "url"]].copy()
+        resultados_df["Palabra Clave"] = resultados_df["texto"].apply(
+            lambda texto: ", ".join([p for p in palabras_clave if p in texto])
+        )
+
+        # Hacer clickeables las URLs
+        resultados_df["URL"] = resultados_df["url"].apply(
             lambda x: f'<a href="{x}" target="_blank">{x}</a>'
         )
 
-    # Mostrar la tabla con HTML habilitado
-            st.write(resultados_df.to_html(escape=False, index=False), unsafe_allow_html=True)
-
-        else:
-            st.warning("No se encontraron coincidencias.")
-
-hide_streamlit_style = """
-            <style>
-            #MainMenu {visibility: hidden;}
-            footer {visibility: hidden;}
-            </style>
-            """
-st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
+        # Mostrar la tabla con HTML
+        st.write(resultados_df[["Palabra Clave", "URL"]].to_html(escape=False, index=False), unsafe_allow_html=True)
+    else:
+        st.warning("No se encontraron coincidencias.")
