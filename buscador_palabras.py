@@ -4,12 +4,13 @@ import pandas as pd
 st.title("🔍 Buscador de Palabras Clave")
 
 # 🔽 Elegir base de datos
-opcion = st.selectbox("Selecciona la base de datos que quieres consultar:", ["CAV", "ICC"])
+opcion = st.selectbox("Selecciona la base de datos que quieres consultar:", ["CAV", "ICC", "MEDIDAS"])
 
 # 📂 URLs de los archivos
 archivos = {
     "CAV": "https://raw.githubusercontent.com/giraggio/sga_sea/refs/heads/main/cavs_texto.csv",
-    "ICC": "https://raw.githubusercontent.com/giraggio/sga_sea/refs/heads/main/pacs_texto.csv"
+    "ICC": "https://raw.githubusercontent.com/giraggio/sga_sea/refs/heads/main/pacs_texto.csv",
+    "MEDIDAS": "https://raw.githubusercontent.com/giraggio/sga_sea/refs/heads/main/medidas_texto.csv"
 }
 
 # 📝 Ingreso de palabras clave
