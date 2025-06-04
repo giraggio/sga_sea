@@ -7,7 +7,7 @@ st.title("🔍 Buscador de Palabras Clave")
 
 
 # 🔽 Elegir base de datos
-opcion = st.selectbox("Selecciona la base de datos que quieres consultar:", ["CAV", "ICC", "MEDIDAS", "Planes de PCyE", "EVI"])
+opcion = st.selectbox("Selecciona la base de datos que quieres consultar:", ["CAV", "ICC", "MEDIDAS", "Planes de PCyE", "EVI", "ICT"])
 
 # 📂 URLs de los archivos
 archivos = {
@@ -15,7 +15,8 @@ archivos = {
     "ICC": "https://raw.githubusercontent.com/giraggio/sga_sea/main/jsonl/pacs_texto_test.jsonl.gz",
     "MEDIDAS": "https://raw.githubusercontent.com/giraggio/sga_sea/main/jsonl/medidas_texto_test.jsonl.gz",
     "Planes de PCyE": 'https://raw.githubusercontent.com/giraggio/sga_sea/main/jsonl/ppce_texto_test.jsonl.gz',
-    "EVI": 'https://raw.githubusercontent.com/giraggio/sga_sea/main/jsonl/evi_texto_test.jsonl.gz'
+    "EVI": 'https://raw.githubusercontent.com/giraggio/sga_sea/main/jsonl/evi_texto_test.jsonl.gz',
+    "ICT": 'https://raw.githubusercontent.com/giraggio/sga_sea/main/jsonl/ict_texto_test.jsonl.gz'
 }
 
 # Inicializar estado
