@@ -31,17 +31,17 @@ def search(
     df = _ensure_doc_id(dataset)
     intent = infer_intent(query)
 
-    terms = split_terms(query)
-    expanded_terms = terms
+    strict_terms = split_terms(query, strict=True)
+    flexible_terms = split_terms(query, strict=False)
 
     if modo == "clasico":
-        result = search_classic(df, expanded_terms, top_k=top_k)
+        result = search_classic(df, strict_terms, top_k=top_k)
     elif modo == "lexico":
-        result = search_lexical(df, expanded_terms, top_k=top_k)
+        result = search_lexical(df, flexible_terms, top_k=top_k)
     elif modo == "semantico":
         result = search_semantic(df, query, top_k=top_k)
     else:
-        lexical = search_lexical(df, expanded_terms, top_k=max(top_k, 200))
+        lexical = search_lexical(df, flexible_terms, top_k=max(top_k, 200))
         semantic = search_semantic(df, query, top_k=max(top_k, 200))
         result = merge_hybrid(lexical, semantic, top_k=top_k)
         if not result.empty:

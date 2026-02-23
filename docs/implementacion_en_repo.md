@@ -56,3 +56,15 @@ PY
 
 ## Nota
 Si no te sirve la expansión por sinónimos, déjala fuera (como en esta implementación), y prioriza exact match + ranking híbrido.
+
+
+## 6) Si fuera del modo clásico salen pocos o cero resultados
+Ajusta estos parámetros primero:
+- En `src/search/query_parser.py`: usar `split_terms(..., strict=False)` para extraer tokens útiles desde consultas largas.
+- En `src/search/engines/semantic_engine.py`: bajar `threshold` (ej. `0.12 -> 0.08`).
+- En híbrido: verificar que `search_lexical(...)` reciba términos tokenizados y no solo frases completas.
+
+Checklist rápido:
+1. ¿La consulta trae comas/comillas? (si no, tokeniza automáticamente para modo no clásico).
+2. ¿Los términos tienen stopwords predominantes? (filtrarlas mejora recall).
+3. ¿El umbral semántico está demasiado alto para tu corpus?
